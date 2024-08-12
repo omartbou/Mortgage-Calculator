@@ -1,23 +1,38 @@
 import logo from './logo.svg';
-import './App.css';
+import MortgageCalculatorForm from "./Components/MortgageCalculatorForm/MortgageCalculatorForm";
+import {useState} from "react";
+import {calculateLoanPayement} from "./utils/loan";
+import EmptyResults from "./Components/MortgageCalculatorForm/EmptyResults";
+import CompletedResults from "./Components/MortgageCalculatorForm/CompletedResult";
+
 
 function App() {
+
+  const [isMortgageCalculated, setIsMortgageCalculated] = useState(false);
+  const [mortgage, setMortgage] = useState({
+    monthlyPayment: 0,
+    totalRepayement: 0,
+  });
+
+  function calculateMortgage(amount, term, rate) {
+    setMortgage(calculateLoanPayement(amount, term, rate));
+    setIsMortgageCalculated(true);
+  }
+
+  function resetValues() {
+    setIsMortgageCalculated(false);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" >
+      <main>
+    <MortgageCalculatorForm onCalculateMortgage={calculateMortgage} onReset={resetValues}  />
+      {isMortgageCalculated ? (
+          <CompletedResults mortgage={mortgage} />
+      ) : (
+          <EmptyResults />
+      )}
+      </main>
     </div>
   );
 }
